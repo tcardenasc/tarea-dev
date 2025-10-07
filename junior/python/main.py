@@ -2,12 +2,35 @@ from typing import List, Tuple, Dict
 import json
 
 
-def calculate_panels(panel_width: int, panel_height: int, 
-                    roof_width: int, roof_height: int) -> int:
-    
-    # Implementa acá tu solución
-    
-    return 0
+def calculate_panels(
+    panel_width: int, panel_height: int, roof_width: int, roof_height: int
+) -> int:
+    # Assume x,y where x >= y
+    y, x = sorted((roof_width, roof_height))
+
+    # Assume a,b where a >= b
+    b, a = sorted((panel_width, panel_height))
+
+    if min(x, y, a, b) <= 0:
+        # Irrelevant cases and prevent division by 0
+        return 0
+
+    # Option 1: Fill side x along side a
+    case1 = (x // a) * (y // b)
+    left1 = x - (x // a) * a
+    if left1 >= b:
+        # Space left between panles and side y, fill with rotated panels
+        case1 += (y // a) * (left1 // b)
+
+    # Option 2: Fill side x along side b
+    case2 = (x // b) * (y // a)
+    left2 = y - (y // a) * a
+    if left2 >= b:
+        # Space left between panles and side x, fill with rotated panels
+        case2 += (x // a) * (left2 // b)
+
+    # Complexity O(1), fixed number of computations independent of input
+    return max(case1, case2)
 
 
 def run_tests() -> None:
